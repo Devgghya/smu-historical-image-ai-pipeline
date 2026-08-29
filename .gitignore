@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+smu_images/
+test_download/
+smu_processed/
+smu_processed_test/
+*.pt
