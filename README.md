@@ -126,9 +126,7 @@ The output is resumable and organized as:
 smu_processed/
   original/original_filename.jpg
   upscaled/original_filename_upscaled.jpg
-  upscaled_by_category/<category>/<people_bucket>/
   upper_body_crops/original_filename_person_01.jpg
-  crops_by_category/<people_bucket>/
   manifest.csv
   manifest.json
   detection_cache.jsonl
@@ -146,3 +144,32 @@ never overwritten. The CSV and JSON manifests contain person counts, confidence
 scores, boxes, crop paths, upscale paths, and stage-specific failure details.
 Low-confidence detections and crops without visible face keypoints are marked
 `needs_review` in both manifests instead of being silently treated as certain.
+
+## Topaz AI Restoration, Colorization & Clean Portrait Cropping
+
+`run_topaz_restoration_pipeline.py` implements a production-grade historical restoration pipeline designed for model training:
+
+1. **Cardboard Border Trimming**: Automatically removes 19th-century mounting cardboard margins so only the authentic photograph is processed.
+2. **AI Colorization**: Converts sepia/monochrome tones into natural skin, textile, and environmental color using `fal-ai/ddcolor`.
+3. **Topaz Generative Enhancement**: Upscales and refines fine historical facial details, hair/turban textures, and clothing folds using `topaz/upscale/image/generative`.
+4. **Targeted Portrait Cropping**: Uses YOLO pose keypoints mapped to the restored dimensions to generate clean 1024×1024 square portraits centered on the subject's face and upper torso.
+5. **Headcount Sorting**: Crops are categorized into `one_person`, `two_people`, `group_3_to_5`, and `group_6_plus`.
+
+### Usage
+
+```powershell
+$env:FAL_KEY = "your-fal-key"
+py -3.11 .\run_topaz_restoration_pipeline.py --people-only --concurrency 2
+```
+
+### Directory Structure
+
+```text
+smu_topaz_restored/
+  full_restored/               # Master restored borderless colorized images
+  full_restored_by_category/   # Sorted by headcount
+  upper_body_crops/            # 1024x1024 training-ready portrait crops
+  crops_by_category/           # Categorized crops (one_person, etc.)
+  manifest.csv                 # Detailed training metadata & file paths
+```
+

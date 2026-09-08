@@ -4,4 +4,12 @@ smu_images/
 test_download/
 smu_processed/
 smu_processed_test/
+smu_topaz_restored/*
+!smu_topaz_restored/manifest.csv
 *.pt
+
+# Test artifacts
+*_test.*
+test_*
+*.png
+
