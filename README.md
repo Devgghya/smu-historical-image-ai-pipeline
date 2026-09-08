@@ -126,7 +126,9 @@ The output is resumable and organized as:
 smu_processed/
   original/original_filename.jpg
   upscaled/original_filename_upscaled.jpg
+  upscaled_by_category/<category>/<people_bucket>/
   upper_body_crops/original_filename_person_01.jpg
+  crops_by_category/<people_bucket>/
   manifest.csv
   manifest.json
   detection_cache.jsonl
